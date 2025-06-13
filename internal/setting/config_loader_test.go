@@ -7,7 +7,7 @@ import (
 )
 
 func TestParseDeviceConfig_ValidInput(t *testing.T) {
-	input := "cnc,192.168.0.1:5000,D110=temp,D102=press"
+	input := "192.168.0.1:5000"
 	expectedAddress := "192.168.0.1:5000"
 	expectedSettings := []Setting{
 		{Register: 'D', Address: 102, Value: "press"},

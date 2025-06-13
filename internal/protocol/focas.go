@@ -39,7 +39,7 @@ func NewFOCAS(handle uint16) *FOCAS {
 // @return error: 읽기 실패 시 에러
 func (f *FOCAS) ReadCNCModeAndStatus() (mode int, state int, err error) {
 	var stat C.ODBST
-	fmt.Println("-handle : ", f.handle)
+	// fmt.Println("handle : ", f.handle)
 	ret := C.cnc_statinfo(f.handle, &stat)
 	if ret != 0 {
 		return 0, 0, fmt.Errorf("CNC 상태 읽기 실패 (code=%d)", ret)
@@ -52,7 +52,7 @@ func (f *FOCAS) ReadCNCModeAndStatus() (mode int, state int, err error) {
 // @return error: 읽기 실패 시 에러
 func (f *FOCAS) ReadMCode() (int, error) {
 	var mdl C.ODBMDL
-	fmt.Println("--handle : ", f.handle)
+	// fmt.Println("handle : ", f.handle)
 	ret := C.cnc_modal(f.handle, 106, 0, &mdl)
 	if ret != 0 {
 		return 0, fmt.Errorf("M코드 읽기 실패 (code=%d)", ret)
@@ -65,7 +65,7 @@ func (f *FOCAS) ReadMCode() (int, error) {
 // @return error: 읽기 실패 시 에러
 func (f *FOCAS) ReadTCode() (int, error) {
 	var mdl C.ODBMDL
-	fmt.Println("---handle : ", f.handle)
+	// fmt.Println("handle : ", f.handle)
 	ret := C.cnc_modal(f.handle, 108, 0, &mdl)
 	if ret != 0 {
 		return 0, fmt.Errorf("T코드 읽기 실패 (code=%d)", ret)
@@ -78,7 +78,7 @@ func (f *FOCAS) ReadTCode() (int, error) {
 // @return error: 읽기 실패 시 에러
 func (f *FOCAS) ReadProgramNumber() (int, error) {
 	var prog C.ODBPRO
-	fmt.Println("----handle : ", f.handle)
+	// fmt.Println("handle : ", f.handle)
 	ret := C.cnc_rdprgnum(f.handle, &prog)
 	if ret != 0 {
 		return 0, fmt.Errorf("프로그램 번호 읽기 실패 (code=%d)", ret)
@@ -111,7 +111,7 @@ type ODBDYGo struct {
 // @return error: 읽기 실패 시 에러
 func (f *FOCAS) ReadDynamicODBDY() (*ODBDYGo, error) {
 	var buf C.ODBDY
-	fmt.Println("-----handle : ", f.handle)
+	// fmt.Println("handle : ", f.handle)
 	ret := C.cnc_rddynamic(f.handle, -1, C.short(unsafe.Sizeof(buf)), &buf)
 	if ret != 0 {
 		return nil, fmt.Errorf("동적 데이터 읽기 실패 (code=%d)", ret)

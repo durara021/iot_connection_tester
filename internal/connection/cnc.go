@@ -29,7 +29,7 @@ func NewCNCHandle(addr string) (*CNCHandle, error) {
 	var handle C.ushort
 	ret := C.cnc_allclibhndl3(ip, 8193, 10, &handle)
 	if ret != 0 {
-		return nil, errs.NewErrs(errs.DeviceTypeFanuc, "", errs.ErrCodeConnectionFailed, fmt.Errorf("핸들 할당 실패"))
+		return nil, errs.NewErrs(errs.DeviceTypeFanuc, errs.ProtocolTypeFocas, errs.ErrCodeConnectionFailed, fmt.Errorf("핸들 할당 실패"))
 	}
 	return &CNCHandle{handle: handle}, nil
 }

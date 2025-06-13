@@ -1,0 +1,7 @@
+{
+  "Register": "D",
+  "Settings": [
+    { "address": 100, "name": "heat" , "type" : "F100" },
+    { "address": 102, "name": "vibrate", "type" : "S" }
+  ]
+}

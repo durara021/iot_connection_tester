@@ -1,10 +1,12 @@
 package usecase
 
 import (
+	"encoding/json"
 	"fmt"
 	"iot_connection_tester/internal/common/errs"
 	"iot_connection_tester/internal/device"
 	"iot_connection_tester/internal/setting"
+	"reflect"
 	"strings"
 	"time"
 )
@@ -26,9 +28,17 @@ func RunTest(input string) error {
 	if err != nil {
 		return errs.NewErrs(cfg.Device, "", errs.ErrCodeConfigParseFailed, err)
 	}
+
+	// 💥 dev가 nil인지 확인 필요!
+	if dev == nil || reflect.ValueOf(dev).IsNil() {
+		return fmt.Errorf("장비 생성 실패: dev is nil")
+	}
+
 	defer func() {
-		if err := dev.Close(); err != nil {
-			fmt.Printf("⚠️ 장비 닫기 실패: %v\n", errs.NewErrs(cfg.Device, "", errs.ErrCodeCloseFailed, err))
+		if dev != nil {
+			if err := dev.Close(); err != nil {
+				fmt.Printf("⚠️ 장비 닫기 실패: %v\n", err)
+			}
 		}
 	}()
 
@@ -73,8 +83,20 @@ func runDeviceTest(dev device.Device) error {
 		return errs.NewErrs("", "", errs.ErrCodeEmptyResult, nil)
 	}
 
-	printResult(result)
+	printJsonResult(result)
+	// printResult(result)
 	return nil
+}
+
+// 테스트 결과를 표 형태로 출력
+// @param result: key=태그명(string), value=수집된 데이터(uint16)
+func printJsonResult(result map[string]uint16) {
+	jsonBytes, err := json.MarshalIndent(result, "", "  ")
+	if err != nil {
+		fmt.Println("❌ JSON 변환 실패:", err)
+		return
+	}
+	fmt.Println(string(jsonBytes))
 }
 
 // 테스트 결과를 표 형태로 출력

@@ -60,5 +60,8 @@ func (m *Melsec) Test() (map[string]uint16, error) {
 // 연결 종료 처리
 // @return error: 닫기 실패 시 에러 반환
 func (m *Melsec) Close() error {
+	if m == nil {
+		return nil
+	}
 	return m.Conn.Close()
 }

@@ -84,5 +84,8 @@ func (f *Fanuc) Test() (map[string]uint16, error) {
 // FOCAS핸들해제 / FANUC 장비연결 종료
 // @return error: 해제 실패 시 에러 반환
 func (f *Fanuc) Close() error {
+	if f == nil {
+		return nil
+	}
 	return f.handle.Close()
 }

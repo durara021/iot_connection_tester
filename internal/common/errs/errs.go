@@ -40,12 +40,24 @@ func GetErrorMessage(errorCode int) string {
 
 // error 인터페이스 구현 메서드, 에러 메시지 반환
 func (e *Errs) Error() string {
-	if e.OriginalError != nil {
-		return fmt.Sprintf("[%s][%s] ErrorCode: %d, Message: %s, Original: %v",
-			e.DeviceType, e.ProtocolType, e.ErrorCode, e.Message, e.OriginalError)
+	var prefix string
+	switch {
+	case e.DeviceType != "" && e.ProtocolType != "":
+		prefix = fmt.Sprintf("[%s/%s] ", e.DeviceType, e.ProtocolType)
+	case e.DeviceType != "":
+		prefix = fmt.Sprintf("[%s] ", e.DeviceType)
+	case e.ProtocolType != "":
+		prefix = fmt.Sprintf("[%s] ", e.ProtocolType)
+	default:
+		prefix = ""
 	}
-	return fmt.Sprintf("[%s][%s] ErrorCode: %d, Message: %s",
-		e.DeviceType, e.ProtocolType, e.ErrorCode, e.Message)
+
+	if e.OriginalError != nil {
+		return fmt.Sprintf("%s \n ErrorCode: %d \n Message: %s \n Original: %v",
+			prefix, e.ErrorCode, e.Message, e.OriginalError)
+	}
+	return fmt.Sprintf("%s \n ErrorCode: %d \n Message: %s ",
+		prefix, e.ErrorCode, e.Message)
 }
 
 // errors 패키지의 Unwrap 기능을 지원, 원본 에러 추출

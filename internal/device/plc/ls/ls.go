@@ -63,5 +63,8 @@ func (l *LS) Test() (map[string]uint16, error) {
 // 연결 종료 처리
 // @return error: 닫기 실패 시 에러 반환
 func (l *LS) Close() error {
+	if l == nil {
+		return nil
+	}
 	return l.Conn.Close()
 }

@@ -5,11 +5,15 @@ import (
 	"encoding/binary"
 )
 
-func buildLSREadPacket(address string, wordCount uint16) []byte {
+// LS 레지스터 읽기 패킷 생성
+// @param strAddr string: 시작 주소 (예: "%D100")
+// @param cnt uint16: 읽을 레지스터 수
+// @return []byte: 생성된 패킷 바이트 슬라이스
+func buildLSReadPacket(strAddr string, cnt uint16) []byte {
 	var buf bytes.Buffer
 
-	buf.Write([]byte{0x4C, 0x53, 0x49, 0x53})
-	// 명령 종류: 0x54 = Read
+	buf.Write([]byte{0x4C, 0x53, 0x49, 0x53}) // "LSIS" 헤더
+
 	header := []byte{
 		0x00, 0x00, // Reserved
 		0x00, 0x00, // Header length
@@ -17,15 +21,12 @@ func buildLSREadPacket(address string, wordCount uint16) []byte {
 		0x00, // CPU info
 		0x00, // Reserved
 		0x00, // Source of request
-		0x54, // Read command
+		0x54, // 명령어 종류: 0x54 = Read
 	}
 	buf.Write(header)
 
-	// 주소 포맷 → ASCII 문자열 ("%D100")
-	buf.WriteString(address)
-
-	// 개수
-	binary.Write(&buf, binary.LittleEndian, wordCount)
+	buf.WriteString(strAddr)                     // 시작 주소
+	binary.Write(&buf, binary.LittleEndian, cnt) // 레지스터 수
 
 	return buf.Bytes()
 }

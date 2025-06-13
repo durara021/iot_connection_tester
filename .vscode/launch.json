@@ -1,0 +1,17 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Go Test",
+      "type": "go",
+      "request": "launch",
+      "mode": "test",
+      "program": "${workspaceFolder}/internal/usecase",
+      "env": {
+        "PATH": "${workspaceFolder}/external/fwlib64;${env:PATH}",
+        "CGO_CFLAGS": "-I${workspaceFolder}/external/fwlib64/30i",
+        "CGO_LDFLAGS": "-L${workspaceFolder}/external/fwlib64/30i -lFwlib64"
+      }
+    }
+  ]
+}

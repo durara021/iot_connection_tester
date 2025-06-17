@@ -24,23 +24,30 @@ func NewSLMP(conn connection.IOConnection) *SLMP {
 // @param expectSize: 수신하고자 하는 응답 데이터의 예상 길이 (바이트)
 // @return []byte: SLMP 응답 데이터 (expectSize만큼 반환)
 // @return error: 응답 에러 또는 길이 부족 시 에러 반환
-func (s *SLMP) Transceive(packet []byte, expectSize int) ([]byte, error) {
-	// 패킷 전송 및 응답 수신
-	response, err := s.Conn.Transceive(packet)
-	if err != nil {
-		return nil, errs.NewErrs("", "", errs.ErrCodeInvalidResponse, err)
+func (s *SLMP) Transceive(register byte, strAddr uint16, cnt uint16) ([]byte, error) {
+
+	packet := buildMelsecReadPacket(register, strAddr, cnt)
+	// 요청 패킷 전송
+	if err := s.Conn.Send(packet); err != nil {
+		return nil, errs.NewErrs("", "", errs.ErrCodeWriteFailed, err)
 	}
 
-	// SLMP 응답 에러 확인 (응답 코드 != 0x0000)
+	// 응답 수신
+	response, err := s.Conn.Receive()
+	if err != nil {
+		return nil, errs.NewErrs("", "", errs.ErrCodeReadFailed, err)
+	}
+
+	// SLMP 응답 코드 검사
 	if len(response) < 10 || response[8] != 0x00 || response[9] != 0x00 {
 		return nil, fmt.Errorf("PLC 응답 오류: 완료 코드 = %02X%02X", response[9], response[8])
 	}
 
-	// 응답 길이 검사
-	if len(response) < expectSize {
-		return nil, fmt.Errorf("응답 길이 부족: expected %d, got %d", expectSize, len(response))
+	// 응답 길이 확인
+	if len(response) < int(cnt)*2 {
+		return nil, fmt.Errorf("응답 길이 부족: expected %d, got %d", int(cnt)*2, len(response))
 	}
 
-	// 유효 응답 데이터 반환 (헤더 제외하고 마지막 expectSize 바이트만 반환)
-	return response[len(response)-expectSize:], nil
+	// 유효한 데이터 반환
+	return response[len(response)-int(cnt)*2:], nil
 }

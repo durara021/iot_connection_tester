@@ -3,7 +3,7 @@ package melsec
 import (
 	"iot_connection_tester/internal/connection"
 	"iot_connection_tester/internal/device/plc/parser"
-	"iot_connection_tester/internal/protocol"
+	protocol "iot_connection_tester/internal/protocol/slmp"
 	"iot_connection_tester/internal/setting"
 )
 
@@ -37,9 +37,9 @@ func (m *Melsec) Connect() error {
 // @return error: 통신 실패 시 에러 반환
 func (m *Melsec) ReadRegister() ([]byte, error) {
 	cfg := m.Config.Setting
-	cnt := cfg[0].Address - cfg[len(cfg)-1].Address + 1
-	packet := buildMelsecReadPacket(cfg[0].Register, cfg[0].Address, cnt)
-	return m.Protocol.Transceive(packet, int(cnt)*2)
+	cnt := cfg[len(cfg)-1].Address - cfg[0].Address + 1
+
+	return m.Protocol.Transceive(cfg[0].Register, cfg[0].Address, cnt)
 }
 
 // 연결 테스트 및 메모리 데이터 파싱

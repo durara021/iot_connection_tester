@@ -24,7 +24,7 @@ func NewFanuc(cfg setting.DeviceConfig) *Fanuc {
 	}
 
 	cHandle := uint16(handle.Handle())
-	fmt.Println("handle : ", cHandle)
+	// fmt.Println("handle : ", cHandle)
 	proto := protocol.NewFOCAS(cHandle)
 
 	return &Fanuc{

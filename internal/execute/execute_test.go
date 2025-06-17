@@ -1,10 +1,9 @@
-package usecase_test
+package execute
 
 import (
 	"iot_connection_tester/internal/device"
 	"iot_connection_tester/internal/device/plc/parser"
 	"iot_connection_tester/internal/setting"
-	"iot_connection_tester/internal/usecase"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -46,8 +45,8 @@ func TestRunTest_MockedPLC(t *testing.T) {
 	device.DeviceFactory = mockFactory
 	defer func() { device.DeviceFactory = original }()
 
-	input := "ls,127.0.0.1:5000,D100=heat,D101=pressure"
+	input := "127.0.0.1:2004"
 
-	err := usecase.RunTest(input)
+	err := RunTest(input)
 	assert.NoError(t, err)
 }

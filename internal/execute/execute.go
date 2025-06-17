@@ -1,4 +1,4 @@
-package usecase
+package execute
 
 import (
 	"encoding/json"
@@ -12,7 +12,7 @@ import (
 )
 
 // 문자열 기반 장비 테스트수행
-// @param input: 장치 설정 문자열 (예: "melsec,192.168.0.1:5000,D100=Speed,D101=Temp")
+// @param input: 장치 설정 문자열 (예: "melsec,192.168.0.1:5000")
 // @return error: 테스트 실패 시 상세 에러, 성공 시 nil
 func RunTest(input string) error {
 	start := time.Now()

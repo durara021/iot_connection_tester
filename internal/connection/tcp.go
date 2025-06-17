@@ -52,17 +52,6 @@ func (t *TCPConnection) Receive() ([]byte, error) {
 	return buf[:n], nil
 }
 
-// TCP를 통해 데이터를 전송하고 응답을 수신 (Send + Receive)
-// @param data: 요청으로 보낼 바이트 슬라이스
-// @return []byte: 수신한 응답 데이터
-// @return error: 전송 또는 수신 실패 시 에러 반환
-func (t *TCPConnection) Transceive(data []byte) ([]byte, error) {
-	if err := t.Send(data); err != nil {
-		return nil, errs.NewErrs("", "", errs.ErrCodeWriteFailed, err)
-	}
-	return t.Receive()
-}
-
 // TCP 연결을 종료
 // @return error: 닫기 실패 시 에러 반환
 // @note: nil인 연결에 대해서는 별도로 닫을 수 없으므로 주의

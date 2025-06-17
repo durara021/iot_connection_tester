@@ -1,6 +1,9 @@
-package melsec
+package protocol
 
-// SLMP 프로토콜의 Batch Read 요청 패킷 생성
+// SLMP 레지스터 읽기 패킷 생성
+// @param strAddr string: 시작 주소 (예: "%D100")
+// @param cnt uint16: 읽을 레지스터 수
+// @return []byte: 생성된 패킷 바이트 슬라이스
 func buildMelsecReadPacket(register byte, strAddr uint16, cnt uint16) []byte {
 	return []byte{
 		// 서브 헤더 및 라우팅 정보

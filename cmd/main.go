@@ -3,7 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
-	"iot_connection_tester/internal/usecase"
+	"iot_connection_tester/internal/execute"
 	"log"
 	"os"
 )
@@ -35,7 +35,7 @@ func main() {
 
 	input := flag.Arg(0)
 
-	err := usecase.RunTest(input)
+	err := execute.RunTest(input)
 	if err != nil {
 		log.Fatalf("테스트 실패: %v", err)
 	}

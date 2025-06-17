@@ -26,10 +26,4 @@ type IOConnection interface {
 	// @return []byte: 수신된 데이터
 	// @return error: 수신 실패 시 에러 반환
 	Receive() ([]byte, error)
-
-	// 한 번의 요청/응답 주기를 수행 (Send + Receive)
-	// @param data: 요청에 사용할 바이트 슬라이스
-	// @return []byte: 응답으로 받은 데이터
-	// @return error: 통신 실패 시 에러 반환
-	Transceive([]byte) ([]byte, error)
 }

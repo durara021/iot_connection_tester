@@ -13,7 +13,7 @@ import (
 type Setting struct {
 	Register byte
 	Address  uint16
-	Value    string
+	Name     string
 }
 
 // 장치 전체 설정 구조체
@@ -83,7 +83,7 @@ func ParseDeviceConfig(input string) (DeviceConfig, error) {
 		Device:  device,
 		Setting: nil,
 	}
-
+	fmt.Println("------- cfg.Device : ", cfg.Device)
 	// FANAC과 CNC는 config.json 생략
 	if cfg.Device != "FANAC" && cfg.Device != "CNC" {
 		data, err := os.ReadFile("config.json")
@@ -105,14 +105,13 @@ func ParseDeviceConfig(input string) (DeviceConfig, error) {
 			cfg.Setting = append(cfg.Setting, Setting{
 				Register: registerByte,
 				Address:  s.Address,
-				Value:    s.Name,
+				Name:     s.Name,
 			})
 		}
 
 		sort.Slice(cfg.Setting, func(i, j int) bool {
 			return cfg.Setting[i].Address < cfg.Setting[j].Address
 		})
-		fmt.Println(cfg.Setting)
 	}
 
 	return cfg, nil

@@ -83,7 +83,7 @@ func ParseDeviceConfig(input string) (DeviceConfig, error) {
 		Device:  device,
 		Setting: nil,
 	}
-	fmt.Println("------- cfg.Device : ", cfg.Device)
+
 	// FANAC과 CNC는 config.json 생략
 	if cfg.Device != "FANAC" && cfg.Device != "CNC" {
 		data, err := os.ReadFile("config.json")

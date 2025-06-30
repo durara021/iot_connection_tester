@@ -1,4 +1,4 @@
-package protocol
+package xgt
 
 import (
 	"bytes"
@@ -6,39 +6,39 @@ import (
 	"fmt"
 )
 
-// buildLSReadPacket generates a valid LSIS FEnet Read command packet
-func buildLSReadPacket(strAddr string, cnt uint16) ([]byte, error) {
-	if len(strAddr) != 6 {
-		return nil, fmt.Errorf("주소는 6자리 ASCII 문자열이어야 합니다 (예: \"D00010\")")
-	}
-
+// BuildXGTReadPacket generates a packet to read 1 DWORD value from given register and address
+// Example: register='D', strAddr=100 → %DW100
+func BuildXGTBlockReadPacket(register byte, strAddr uint16, cnt uint16) ([]byte, error) {
 	var buf bytes.Buffer
 
-	// [1] 고정 헤더 "LSIS"
-	buf.Write([]byte{'L', 'S', 'I', 'S'})
+	// --- HEADER ---
+	buf.Write([]byte{'L', 'S', 'I', 'S', '-', 'X', 'G', 'T', 0x00, 0x00}) // "LSIS-XGT"
+	buf.Write([]byte{0x00, 0x00})                                         // PLC Info
+	buf.WriteByte(0x00)                                                   // CPU Info
+	buf.WriteByte(0x33)                                                   // PC → PLC
+	buf.Write([]byte{0x00, 0x00})                                         // Invoke ID
+	// --- HEADER ---
 
-	// [2] Reserved (2 bytes)
-	buf.Write([]byte{0x00, 0x00})
+	// --- BODY ---
+	var body bytes.Buffer
+	binary.Write(&body, binary.LittleEndian, uint16(0x54)) // 읽기요구
+	binary.Write(&body, binary.LittleEndian, uint16(0x14)) // 연속 읽기
+	binary.Write(&body, binary.LittleEndian, uint16(0x00)) // 예약영역
+	binary.Write(&body, binary.LittleEndian, uint16(0x01)) // 블록 수
+	binary.Write(&body, binary.LittleEndian, uint16(0x06)) // 변수명 길이
+	var addr []byte
+	addr = fmt.Appendf(addr, "%%%cB%d", register, strAddr*2)
+	body.Write(addr)
 
-	// [3] Header Length (2 bytes): 12
-	binary.Write(&buf, binary.LittleEndian, uint16(12))
+	binary.Write(&body, binary.LittleEndian, uint16(cnt*2)) // 데이터 갯수
+	// --- BODY ---
 
-	// [4] Data Length (2 bytes): 주소(6) + 개수(2) = 8
-	binary.Write(&buf, binary.LittleEndian, uint16(8))
+	// --- HEADER ---
+	binary.Write(&buf, binary.LittleEndian, uint16(body.Len())) // Length
+	buf.Write([]byte{0x00, 0x00})                               // Frame ID
+	// --- HEADER ---
 
-	// [5] 제어 정보 (4 bytes)
-	buf.Write([]byte{
-		0x00, // CPU 정보
-		0x00, // Reserved
-		0x00, // Source of request
-		0x54, // 명령어 코드: 0x54 = Read
-	})
-
-	// [6] 주소 (6 bytes, ASCII 고정)
-	buf.WriteString(strAddr)
-
-	// [7] 읽을 개수 (2 bytes, Little Endian)
-	binary.Write(&buf, binary.LittleEndian, cnt)
+	buf.Write(body.Bytes())
 
 	return buf.Bytes(), nil
 }

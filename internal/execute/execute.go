@@ -29,7 +29,7 @@ func RunTest(input string) error {
 		return errs.NewErrs(cfg.Device, "", errs.ErrCodeConfigParseFailed, err)
 	}
 
-	// 💥 dev가 nil인지 확인 필요!
+	// dev가 nil인지 확인 필요!
 	if dev == nil || reflect.ValueOf(dev).IsNil() {
 		return fmt.Errorf("장비 생성 실패: dev is nil")
 	}

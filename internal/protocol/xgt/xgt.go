@@ -1,4 +1,4 @@
-package protocol
+package xgt
 
 import (
 	"fmt"
@@ -26,7 +26,7 @@ func NewXGT(conn connection.IOConnection) *XGT {
 // @return error: 응답 에러 또는 길이 부족 시 에러 반환
 func (x *XGT) Transceive(register byte, strAddr uint16, cnt uint16) ([]byte, error) {
 
-	packet, err := buildLSReadPacket(fmt.Sprintf("%c%05d", register, strAddr), cnt)
+	packet, err := BuildXGTBlockReadPacket(register, strAddr, cnt)
 	fmt.Printf("전송 패킷: % X\n", packet)
 
 	// 요청 패킷 전송
@@ -36,6 +36,7 @@ func (x *XGT) Transceive(register byte, strAddr uint16, cnt uint16) ([]byte, err
 
 	// 응답 수신
 	response, err := x.Conn.Receive()
+	// fmt.Printf("응답 패킷: % X\n", response)
 	if err != nil {
 		return nil, errs.NewErrs("", "", errs.ErrCodeReadFailed, err)
 	}

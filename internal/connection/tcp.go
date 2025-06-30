@@ -26,6 +26,7 @@ func (t *TCPConnection) Connect() error {
 		return errs.NewErrs("", "", errs.ErrCodeConnectionFailed, err)
 	}
 	t.conn = conn
+
 	return nil
 }
 
@@ -37,6 +38,7 @@ func (t *TCPConnection) Send(data []byte) error {
 	if err != nil {
 		return errs.NewErrs("", "", errs.ErrCodeWriteFailed, err)
 	}
+
 	return nil
 }
 
@@ -49,6 +51,7 @@ func (t *TCPConnection) Receive() ([]byte, error) {
 	if err != nil {
 		return nil, errs.NewErrs("", "", errs.ErrCodeReadFailed, err)
 	}
+
 	return buf[:n], nil
 }
 

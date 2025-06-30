@@ -30,8 +30,8 @@ func ParseData(data []byte, settings []setting.Setting) (map[string]uint16, erro
 		if start+1 >= len(data) {
 			continue // 범위를 벗어나면 무시
 		}
-		val := binary.BigEndian.Uint16(data[start : start+2]) // 빅엔디안으로 2바이트 정수 해석
-		result[s.Name] = val                                  // 태그 이름 (s.Name)에 값 할당
+		val := binary.LittleEndian.Uint16(data[start : start+2]) // 빅엔디안으로 2바이트 정수 해석
+		result[s.Name] = val                                     // 태그 이름 (s.Name)에 값 할당
 	}
 
 	// 결과가 비어 있으면 오류 반환

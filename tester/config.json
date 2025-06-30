@@ -1,0 +1,8 @@
+{
+  "Register": "DB",
+  "Settings": [
+    { "address": 100, "name": "aa" , "type" : "F100" },
+    { "address": 101, "name": "bb" , "type" : "F100" },
+    { "address": 110, "name": "cc"  }
+  ]
+}
